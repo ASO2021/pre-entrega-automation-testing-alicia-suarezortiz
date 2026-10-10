@@ -1,5 +1,6 @@
 import logging
 
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -29,6 +30,15 @@ class BasePage:
         element = self.find(locator)
         element.clear()
         element.send_keys(text)
+
+    def texts_of(self, locator):
+        for attempt in range(3):
+            try:
+                return [element.text for element in self.driver.find_elements(*locator)]
+            except StaleElementReferenceException:
+                logger.info("Elemento obsoleto, reintentando %s", locator)
+                if attempt == 2:
+                    raise
 
     def text_of(self, locator):
         return self.find(locator).text

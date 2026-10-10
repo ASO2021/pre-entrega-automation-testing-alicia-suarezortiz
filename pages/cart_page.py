@@ -15,7 +15,7 @@ class CartPage(BasePage):
         return (By.CSS_SELECTOR, f"[data-test='remove-{slug}']")
 
     def item_names(self):
-        return [e.text for e in self.driver.find_elements(*self.ITEM_NAME)]
+        return self.texts_of(self.ITEM_NAME)
 
     def remove(self, product_name):
         self.click(self._remove_button(product_name))

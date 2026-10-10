@@ -1,4 +1,5 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 
 from pages.base_page import BasePage
@@ -54,7 +55,8 @@ class InventoryPage(BasePage):
         return name, price
 
     def product_names(self):
-        return [e.text for e in self.find_all(self.ITEM_NAME)]
+        self.find_all(self.ITEM_NAME)
+        return self.texts_of(self.ITEM_NAME)
 
     def product_prices(self):
         return [parse_price(e.text) for e in self.find_all(self.ITEM_PRICE)]
@@ -77,6 +79,7 @@ class InventoryPage(BasePage):
     def go_to_cart(self):
         self.click(self.CART_LINK)
         self.wait_for_url_contains("cart.html")
+        self.wait.until(EC.text_to_be_present_in_element(self.TITLE, "Your Cart"))
 
     def sort_by(self, value):
         """value: az | za | lohi | hilo"""
